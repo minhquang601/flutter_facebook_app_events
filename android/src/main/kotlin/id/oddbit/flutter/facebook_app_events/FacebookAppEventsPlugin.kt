@@ -35,6 +35,7 @@ class FacebookAppEventsPlugin(registrar: Registrar) : MethodCallHandler {
       "flush" -> handleFlush(call, result)
       "getApplicationId" -> getApplicationId(call, result)
       "logEvent" -> handleLogEvent(call, result)
+      "logPurchases" -> handleLogPurchase(call, result)
       "logPushNotificationOpen" -> handlePushNotificationOpen(call, result)
       "setUserData" -> handleSetUserData(call, result)
       "setUserID" -> handleSetUserId(call, result)
@@ -61,6 +62,19 @@ class FacebookAppEventsPlugin(registrar: Registrar) : MethodCallHandler {
 
   private fun getApplicationId(call: MethodCall, result: Result) {
     result.success(appEventsLogger.getApplicationId())
+  }
+
+  private fun handleLogPurchase(call: MethodCall, result: Result) {
+    val parameters = call.argument("parameters") as? Map<String, Object>
+    val valueToSum =  BigDecimal.valueOf(call.argument("_valueToSum") as? Double);
+    val currency = Currency.getInstance(call.argument("currency") as? String) 
+
+    if (valueToSum != null && parameters != null) {
+      val parameterBundle = createBundleFromMap(parameters)
+      appEventsLogger.logPurchase(valueToSum, currency, parameterBundle)
+    } 
+
+    result.success(null)
   }
 
   private fun handleLogEvent(call: MethodCall, result: Result) {

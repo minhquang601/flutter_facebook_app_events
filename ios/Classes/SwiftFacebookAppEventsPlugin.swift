@@ -26,6 +26,9 @@ public class SwiftFacebookAppEventsPlugin: NSObject, FlutterPlugin {
         case "logEvent":
             handleLogEvent(call, result: result)
             break
+        case "logPurchases":
+            handleLogEventPurchases(call, result: result)
+            break
         case "logPushNotificationOpen":
             handlePushNotificationOpen(call, result: result)
             break
@@ -74,6 +77,19 @@ public class SwiftFacebookAppEventsPlugin: NSObject, FlutterPlugin {
             AppEvents.logEvent(AppEvents.Name(eventName), valueToSum: valueToDouble, parameters: parameters)
         } else {
             AppEvents.logEvent(AppEvents.Name(eventName), parameters: parameters)
+        }
+        
+        result(nil)
+    }
+    
+    private func handleLogEventPurchases(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as? [String: Any] ?? [String: Any]()
+        let parameters = arguments["parameters"] as? [String: Any] ?? [String: Any]()
+
+        if arguments["_valueToSum"] != nil && !(arguments["_valueToSum"] is NSNull) {
+            let valueToDouble = arguments["_valueToSum"] as! Double
+            let currency = arguments["currency"] as! String
+            AppEvents.logPurchase(valueToDouble, currency: currency, parameters: parameters)
         }
         
         result(nil)

@@ -68,6 +68,21 @@ class FacebookAppEvents {
     return _channel.invokeMethod<void>('logEvent', _filterOutNulls(args));
   }
 
+   /// Log an app event with the specified [name] and the supplied [parameters] value.
+  Future<void> logPurchases({
+    Map<String, dynamic> parameters,
+    double valueToSum,
+    String currency = 'VND',
+  }) {
+    final args = <String, dynamic>{
+      'parameters': parameters,
+      _paramNameValueToSum: valueToSum,
+      'currency': currency,
+    };
+
+    return _channel.invokeMethod<void>('logPurchases', _filterOutNulls(args));
+  }
+
   /// Sets user data to associate with all app events.
   /// All user data are hashed and used to match Facebook user from this
   /// instance of an application. The user data will be persisted between
