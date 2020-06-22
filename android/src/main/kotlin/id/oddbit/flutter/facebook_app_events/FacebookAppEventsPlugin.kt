@@ -16,11 +16,7 @@ import java.util.*
 
 class FacebookAppEventsPlugin(registrar: Registrar) : MethodCallHandler {
   private val logTag = "FacebookAppEvents"
-  var appEventsLogger: AppEventsLogger
-
-  init {
-    this.appEventsLogger = AppEventsLogger.newLogger(registrar.context())
-  }
+  private var appEventsLogger: AppEventsLogger = AppEventsLogger.newLogger(registrar.context())
 
   companion object {
     @JvmStatic
