@@ -48,9 +48,9 @@ class FacebookAppEvents {
     return _channel.invokeMethod<void>('flush');
   }
 
-  /// Explicitly flush any stored events to the server.
-  Future<void> getApplicationId() {
-    return _channel.invokeMethod<void>('getApplicationId');
+  /// Returns the app ID this logger was configured to log to.
+  Future<String> getApplicationId() {
+    return _channel.invokeMethod<String>('getApplicationId');
   }
 
   /// Log an app event with the specified [name] and the supplied [parameters] value.
@@ -224,5 +224,36 @@ class FacebookAppEvents {
   /// See: https://developers.facebook.com/docs/app-events/gdpr-compliance
   Future<void> setAutoLogAppEventsEnabled(bool enabled) {
     return _channel.invokeMethod<void>('setAutoLogAppEventsEnabled', enabled);
+  }
+
+  /// Set Data Processing Options
+  /// This is needed for California Consumer Privacy Act (CCPA) compliance
+  ///
+  /// See: https://developers.facebook.com/docs/marketing-apis/data-processing-options
+  Future<void> setDataProcessingOptions(
+    List<String> options, {
+    int country,
+    int state,
+  }) {
+    final args = <String, dynamic>{
+      'options': options,
+      'country': country,
+      'state': state,
+    };
+
+    return _channel.invokeMethod<void>('setDataProcessingOptions', args);
+  }
+
+  Future<void> logPurchase({
+    @required double amount,
+    @required String currency,
+    Map<String, dynamic> parameters,
+  }) {
+    final args = <String, dynamic>{
+      'amount': amount,
+      'currency': currency,
+      'parameters': parameters,
+    };
+    return _channel.invokeMethod<void>('logPurchase', _filterOutNulls(args));
   }
 }
